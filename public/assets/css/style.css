@@ -1,0 +1,23 @@
+body {
+font-family: Arial, sans-serif;
+}
+
+header {
+	text-align:center;
+	padding:10px;
+	border-bottom:1px solid #ccc;
+}
+
+nav a {
+	display:inline-block;
+	padding:0 25px;
+	text-decoration:none;
+	color:inherit;
+}
+
+#content-wrap {
+	width:80%;
+	min-width:320px;
+	margin:0 auto;
+	padding:10px 0;
+}
