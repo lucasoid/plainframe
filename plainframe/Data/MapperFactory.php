@@ -16,10 +16,10 @@ class MapperFactory {
 	 *  @return \Data\Mapper|bool
 	 */
 	public static function makeMapper($objecttype) {
-		$classname = "plainframe\Data\Mapper".$objecttype;
-		if(!empty($objecttype) && class_exists($classname, false)) {
+		$classname = "\plainframe\Data\Mapper".$objecttype;
+		if(!empty($objecttype) && class_exists($classname)) {
 			$mapper = new $classname;
-			if(is_a($mapper, "plainframe\Data\Mapper")) {
+			if(is_a($mapper, "\plainframe\Data\Mapper")) {
 				return $mapper;
 			}
 		}

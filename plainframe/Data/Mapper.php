@@ -247,10 +247,8 @@ abstract class Mapper {
 	 */
 	public function getCollectionCount(array $filters) {
 				
-		$querybuilder = new SQLSelectBuilder();
-		$querybuilder->filters = $filters;
-		$querybuilder->baseQuery = $this->baseQuery;
-		
+		$querybuilder = $this->getQueryBuilder($filters, array(), array());
+				
 		$qry = $querybuilder->getCountQuery();
 		$params = $querybuilder->getParams();
 		
