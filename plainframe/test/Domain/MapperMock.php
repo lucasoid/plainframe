@@ -7,6 +7,8 @@ class MapperMock extends Mapper {
 		
 	protected function setColumns() {}
 	
+	protected function setSaveColumns() {}
+	
 	protected function setIdField() {}
 	
 	protected function setMappedClass() {}

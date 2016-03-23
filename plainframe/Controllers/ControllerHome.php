@@ -35,20 +35,30 @@ EOT;
 		$stmt->execute(array('me', $hashed_pass));
 		
 		//INIT BOOKS TABLE
-		$qry = "CREATE TABLE IF NOT EXISTS books (id INTEGER PRIMARY KEY, title TEXT UNIQUE, author TEXT)";
+		$qry = "CREATE TABLE IF NOT EXISTS books (id INTEGER PRIMARY KEY, title TEXT UNIQUE, author TEXT, pages INTEGER, published DATE)";
 		$stmt = $conn->prepare($qry);
 		$stmt->execute(array());
 		$books = array(
-			array('title' => 'Notes From Underground', 'author' => 'Dostoevsky, Fyodor'),
-			array('title' => 'The Sound & The Fury', 'author' => 'Faulkner, William'),
-			array('title' => 'A Tramp Abroad', 'author' => 'Twain, Mark'),
-			array('title' => 'A Tale of Two Cities', 'author' => 'Dickens, Charles'),
+			array('title' => 'Notes From Underground', 'author' => 'Dostoevsky, Fyodor', 'pages'=>212, 'published'=>'1864-01-01'),
+			array('title' => 'The Sound & The Fury', 'author' => 'Faulkner, William', 'pages'=>257, 'published'=>'1929-02-03'),
+			array('title' => 'A Tramp Abroad', 'author' => 'Twain, Mark', 'pages'=>368, 'published'=>'1880-08-08'),
+			array('title' => 'A Tale of Two Cities', 'author' => 'Dickens, Charles', 'pages'=>312, 'published' => '1859-12-10'),
 		);
 		foreach($books as $book) {
-			$qry = "INSERT INTO books (title, author) VALUES (?, ?)";
+			$qry = "INSERT INTO books (title, author, pages, published) VALUES (?, ?, ?, ?)";
 			$stmt = $conn->prepare($qry);
-			$stmt->execute(array($book['title'], $book['author']));
+			$stmt->execute(array($book['title'], $book['author'], $book['pages'], $book['published']));
 		}
+		
+		//INIT PRESETS TABLE
+		$qry = 'CREATE TABLE IF NOT EXISTS presets (id INTEGER PRIMARY KEY UNIQUE, controller TEXT, userid TEXT, preset TEXT, name TEXT, primeflag INTEGER)';
+		$stmt = $conn->prepare($qry);
+		$stmt->execute(array());
+		
+		//INIT UPLOADS TABLE
+		$qry = 'CREATE TABLE IF NOT EXISTS uploads (id INTEGER PRIMARY KEY UNIQUE, creatorid TEXT, title TEXT, updated DATE, filename TEXT, mimetype TEXT)';
+		$stmt = $conn->prepare($qry);
+		$stmt->execute(array());
 		
 		$page->content = 'Database set up and user created.<br/>
 		userid: me<br/>

@@ -23,6 +23,7 @@ abstract class Mapper {
 		$this->setDbType();
 		$this->setBaseQuery();
 		$this->setColumns();
+		$this->setSaveColumns();
 		$this->setIdField();
 		$this->setMappedClass();
 		$this->setTable();
@@ -35,6 +36,8 @@ abstract class Mapper {
 	abstract protected function setBaseQuery();
 	
 	abstract protected function setColumns();
+	
+	abstract protected function setSaveColumns();
 	
 	abstract protected function setIdField();
 	
@@ -49,7 +52,7 @@ abstract class Mapper {
 	protected function doUpdate(\plainframe\Domain\Object $obj) {
 		$mappedFields = array();
 		$params = array();
-		foreach($this->columns as $column) {
+		foreach($this->savecolumns as $column) {
 			if(property_exists($obj, $column) && array_key_exists($column, $obj->readyToUpdate) && true === $obj->readyToUpdate[$column]) {
 				$mappedFields[] = $column . '=?';
 				$params[] = $obj->{$column};
@@ -77,7 +80,7 @@ abstract class Mapper {
 		$cols = array();
 		$vals = array();
 		$params = array();
-		foreach($this->columns as $column) {
+		foreach($this->savecolumns as $column) {
 			if(property_exists($obj, $column) && array_key_exists($column, $obj->readyToUpdate) && true === $obj->readyToUpdate[$column]) {
 				$cols[] = $column;
 				$vals[] = '?';

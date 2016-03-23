@@ -5,13 +5,17 @@ namespace plainframe\Data;
 class MapperBook extends Mapper {
 		
 	protected function setBaseQuery() {
-		$this->baseQuery = 'SELECT id, title, author FROM books';
+		$this->baseQuery = 'SELECT id, title, author, pages, published FROM books';
+		$this->baseQuery = 'SELECT id, title, author, pages, (SELECT SUM(pages) from books WHERE <<WHERE>>) AS allpages, published FROM books';
 	}
 	
 	protected function setColumns() {
-		$this->columns = array('id', 'title', 'author');
+		$this->columns = array('id', 'title', 'author', 'allpages', 'pages', 'published');
 	}
 	
+	protected function setSaveColumns() {
+		$this->savecolumns = array('id', 'title', 'author', 'pages', 'published');
+	}
 	protected function setIdField() {
 		$this->idFieldName = 'id';
 	}
