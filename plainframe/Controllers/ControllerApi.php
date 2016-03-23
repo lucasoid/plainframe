@@ -6,16 +6,7 @@ use plainframe\Domain\Collection;
 use plainframe\Auth\LoggedInUser;
 
 class ControllerApi extends Controller {
-	/*
-	support these types of requests:
-		GET api/items with JSON constraints
-		GET api/items/count with constraints
-		GET api/items/17
-		POST api/items with JSON definitions
-		PUT api/items/17 with JSON definitions
-		DELETE api/items/17
-	*/
-	
+		
 	public function index() {
 		if(false == LoggedInUser::loggedIn()) {
 			header('403', false, 403);
@@ -29,8 +20,8 @@ class ControllerApi extends Controller {
 			$path = explode("?", $uri);
 			$path = explode("/", $path[0]);
 			array_shift($path); // remove the /api part
-			$resources = array('book', 'me');
-			if(!empty($path[0]) && in_array($path[0], $resources)) {
+			$resources = array('book', 'upload', 'me', 'preset');
+			if(!empty($path[0]) && in_array(strtolower($path[0]), $resources)) {
 				$resource = ucwords(array_shift($path));
 			}			
 			else {
@@ -114,13 +105,12 @@ class ControllerApi extends Controller {
 	
 	private function getCollection($resource, $params) {
 		$constraints = $this->getConstraints($params);
-		$collection = new Collection($resource, $constraints['filters'], $constraints['sortlevels'], $constraints['range']);
-		if($collection->valid()) {
+		$filters = is_array($constraints['filters']) ? $constraints['filters'] : json_decode($constraints['filters'], true);
+		$sortlevels = is_array($constraints['sortlevels']) ? $constraints['sortlevels'] : json_decode($constraints['sortlevels'], true);
+		$range = is_array($constraints['range']) ? $constraints['range'] : json_decode($constraints['range'], true);
+		
+		if($collection = new Collection($resource, $constraints['filters'], $constraints['sortlevels'], $constraints['range'])) {
 			echo $collection->toJson();
-		}
-		else {
-			header('400', false, 400);
-			echo json_encode('Error retrieving collection.');
 		}
 	}
 	
@@ -143,8 +133,16 @@ class ControllerApi extends Controller {
 		}
 	}
 		
-	private function me() {
-		echo \plainframe\Auth\LoggedInUser::getUser()->toJson();
+	public function me() {
+		$id = LoggedInUser::getLoggedInUserId();
+		$mapper = MapperFactory::makeMapper('User');
+		if($user = $mapper->findById($id)) {
+			echo $user->toJson();
+		}
+		else {
+			header('400', false, 400);
+			echo json_encode('Error retrieving item.');
+		}
 	}
 	
 	private function save($mapper, $object, $params) {		
@@ -162,11 +160,15 @@ class ControllerApi extends Controller {
 		$filters = $sortlevels = $range = array();
 		$sortlevels = !empty($params['sortlevels']) ? $params['sortlevels'] : array();
 		$filters = !empty($params['filters']) ? $params['filters'] : array();
+		$filters = is_array($filters) ? $filters : json_decode($filters, true);
+		$sortlevels = is_array($sortlevels) ? $sortlevels : json_decode($sortlevels, true);
+				
 		$page = isset($params['page']) && is_numeric($params['page']) && $params['page'] > 0 ? $params['page'] : '1';
 		$rpp = isset($params['rpp']) && is_numeric($params['rpp']) && $params['rpp'] > 0? $params['rpp'] : '100';
 		$offset = ($page - 1) * $rpp;
 		$end = $offset + $rpp;
 		$range = array('start' => $offset, 'end' => $end);
+		
 		return array('filters'=>$filters, 'sortlevels'=>$sortlevels, 'range'=>$range);
 	}
 	
