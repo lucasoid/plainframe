@@ -20,6 +20,10 @@ class MapperUser extends Mapper {
 		$this->idFieldName = 'userid';
 	}
 	
+	protected function setIdSaveField() {
+		$this->idSaveFieldName = 'userid';
+	}
+	
 	protected function setMappedClass() {
 		$this->mappedClass = 'plainframe\Domain\User';
 	}

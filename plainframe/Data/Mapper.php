@@ -12,6 +12,7 @@ abstract class Mapper {
 	protected $baseQuery;
 	protected $columns;
 	protected $idFieldName;
+	protected $idSaveFieldName;
 	protected $mappedClass;
 	protected $table;
 	protected $dbh;
@@ -25,6 +26,7 @@ abstract class Mapper {
 		$this->setColumns();
 		$this->setSaveColumns();
 		$this->setIdField();
+		$this->setIdSaveField();
 		$this->setMappedClass();
 		$this->setTable();
 	}
@@ -59,9 +61,10 @@ abstract class Mapper {
 			}
 		}
 		$params[] = $obj->id;
-		$qry = 'UPDATE ' . $this->table . ' SET ' . implode(', ', $mappedFields) . ' WHERE ' . $this->idFieldName . '=?';
+		$qry = 'UPDATE ' . $this->table . ' SET ' . implode(', ', $mappedFields) . ' WHERE ' . $this->idSaveFieldName . '=?';
 		$this->dbh->beginTransaction();
 		$stmt = $this->dbh->prepare($qry);
+		
 		$exec = $stmt->execute($params);
 		if($this->dbh->commit() && $exec) {
 			return $obj;
@@ -115,7 +118,7 @@ abstract class Mapper {
 	 */
 	protected function doDelete(\plainframe\Domain\Object $obj) {
 		
-		$qry = 'DELETE FROM ' . $this->table . ' WHERE ' . $this->idFieldName . '=?';
+		$qry = 'DELETE FROM ' . $this->table . ' WHERE ' . $this->idSaveFieldName . '=?';
 		$params = array($obj->id);
 				
 		$this->dbh->beginTransaction();

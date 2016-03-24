@@ -16,8 +16,13 @@ class MapperBook extends Mapper {
 	protected function setSaveColumns() {
 		$this->savecolumns = array('id'=>'id', 'title'=>'title', 'author'=>'author', 'pages'=>'pages', 'published'=>'published');
 	}
+	
 	protected function setIdField() {
 		$this->idFieldName = 'id';
+	}
+	
+	protected function setIdSaveField() {
+		$this->idSaveFieldName = 'id';
 	}
 	
 	protected function setMappedClass() {

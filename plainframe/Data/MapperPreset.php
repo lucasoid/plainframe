@@ -19,6 +19,9 @@ class MapperPreset extends Mapper {
 		$this->idFieldName = 'id';
 	}
 	
+	protected function setIdSaveField() {
+		$this->idSaveFieldName = 'id';
+	}
 	protected function setMappedClass() {
 		$this->mappedClass = 'plainframe\Domain\Preset';
 	}
