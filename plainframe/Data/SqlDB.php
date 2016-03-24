@@ -71,13 +71,13 @@ class SqlDB {
 		}
 		
 		if(!empty($pw)) {
-			$this->pw = $pw;
+			$this->password = $pw;
 		}
 		elseif(null != Config::get('db', 'pw')) {
-			$this->pw = Config::get('db', 'pw');
+			$this->password = Config::get('db', 'pw');
 		}
 		else {
-			$this->pw = '';
+			$this->password = '';
 		}
 		
 		if(!empty($database)) {
