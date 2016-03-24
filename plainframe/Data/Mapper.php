@@ -192,7 +192,7 @@ abstract class Mapper {
 		$querybuilder = $this->getQueryBuilder($filters, $sortlevels, $range);
 		$querybuilder->baseQuery = $this->baseQuery;
 		
-		$qry = $querybuilder->getQuery();
+		$qry = $querybuilder->getQuery($this->dbtype);
 		$params = $querybuilder->getParams();
 		
 		$stmt = $this->dbh->prepare($qry);

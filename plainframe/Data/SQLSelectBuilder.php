@@ -128,10 +128,10 @@ class SQLSelectBuilder {
 		}	
 				
 		$_sortlevels = array();
-		$collation = $dbtype == 'SQLITE' ? ' COLLATE NOCASE ' : '';
+		$collation = $dbtype == 'SQLITE' ? 'COLLATE NOCASE' : '';
 		if(!empty($this->sortlevels) && $this->sortLevelsAreValid()) {
 			foreach($this->sortlevels as $level) {
-				$_sortlevels[] = $level['orderby'] . $collation . $level['sort'];
+				$_sortlevels[] = $level['orderby'] . ' ' . $collation . ' ' . $level['sort'];
 			}
 		}
 		$orderby = !empty($_sortlevels) ? ' ORDER BY ' . implode(', ', $_sortlevels) : '';
