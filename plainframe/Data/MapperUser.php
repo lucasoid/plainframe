@@ -13,7 +13,7 @@ class MapperUser extends Mapper {
 	}
 	
 	protected function setSaveColumns() {
-		$this->savecolumns = array('userid');
+		$this->savecolumns = array('userid' => 'userid');
 	}	
 	
 	protected function setIdField() {

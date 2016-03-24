@@ -52,10 +52,10 @@ abstract class Mapper {
 	protected function doUpdate(\plainframe\Domain\Object $obj) {
 		$mappedFields = array();
 		$params = array();
-		foreach($this->savecolumns as $column) {
-			if(property_exists($obj, $column) && array_key_exists($column, $obj->readyToUpdate) && true === $obj->readyToUpdate[$column]) {
+		foreach($this->savecolumns as $column => $label) {
+			if(property_exists($obj, $label) && array_key_exists($label, $obj->readyToUpdate) && true === $obj->readyToUpdate[$label]) {
 				$mappedFields[] = $column . '=?';
-				$params[] = $obj->{$column};
+				$params[] = $obj->{$label};
 			}
 		}
 		$params[] = $obj->id;
@@ -80,11 +80,11 @@ abstract class Mapper {
 		$cols = array();
 		$vals = array();
 		$params = array();
-		foreach($this->savecolumns as $column) {
-			if(property_exists($obj, $column) && array_key_exists($column, $obj->readyToUpdate) && true === $obj->readyToUpdate[$column]) {
+		foreach($this->savecolumns as $column => $label) {
+			if(property_exists($obj, $label) && array_key_exists($label, $obj->readyToUpdate) && true === $obj->readyToUpdate[$label]) {
 				$cols[] = $column;
 				$vals[] = '?';
-				$params[] = $obj->{$column};
+				$params[] = $obj->{$label};
 			}
 		}
 		$qry = 'INSERT INTO ' . $this->table . ' (' . implode(', ', $cols) . ') VALUES (' . implode(', ', $vals) . ')';

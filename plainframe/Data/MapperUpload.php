@@ -12,7 +12,7 @@ class MapperUpload extends Mapper {
 	}
 	
 	protected function setSaveColumns() {
-		$this->savecolumns = array('id', 'creatorid', 'title', 'updated', 'filename', 'mimetype');
+		$this->savecolumns = array('id'=>'id', 'creatorid'=>'creatorid', 'title'=>'title', 'updated'=>'updated', 'filename'=>'filename', 'mimetype'=>'mimetype');
 	}
 	
 	protected function setIdField() {

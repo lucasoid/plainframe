@@ -14,7 +14,7 @@ class MapperBook extends Mapper {
 	}
 	
 	protected function setSaveColumns() {
-		$this->savecolumns = array('id', 'title', 'author', 'pages', 'published');
+		$this->savecolumns = array('id'=>'id', 'title'=>'title', 'author'=>'author', 'pages'=>'pages', 'published'=>'published');
 	}
 	protected function setIdField() {
 		$this->idFieldName = 'id';

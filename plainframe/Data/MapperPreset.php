@@ -12,7 +12,7 @@ class MapperPreset extends Mapper {
 	}
 	
 	protected function setSaveColumns() {
-		$this->savecolumns = array('id', 'controller', 'userid', 'preset', 'name', 'primeflag');
+		$this->savecolumns = array('id'=>'id', 'controller'=>'controller', 'userid'=>'userid', 'preset'=>'preset', 'name'=>'name', 'primeflag'=>'primeflag');
 	}
 	
 	protected function setIdField() {
