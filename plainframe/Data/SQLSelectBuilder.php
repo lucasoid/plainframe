@@ -169,7 +169,7 @@ class SQLSelectBuilder {
 			foreach($this->sortlevels as $level) {
 				$orderarray[] = $level['orderby'] . ' ' . $level['sort'];
 			}
-			$orderby = 'ORDER BY ' . implode(", ", $orderarray);
+			$orderby = implode(", ", $orderarray);
 		}
 		else {
 			$orderby = "(SELECT 0)";
@@ -179,7 +179,7 @@ class SQLSelectBuilder {
 			$range = ' WHERE rowid between ' . $this->range['start'] . ' AND ' . $this->range['end'];
 		}
 		
-		$qry = 'WITH results AS (SELECT ROW_NUMBER() OVER (' . $orderby . ') AS rowid, * FROM (' . $this->baseQuery . ') AS x' . $where . ') SELECT * FROM results' . $range;
+		$qry = 'WITH results AS (SELECT ROW_NUMBER() OVER (ORDER BY ' . $orderby . ') AS rowid, * FROM (' . $this->baseQuery . ') AS x' . $where . ') SELECT * FROM results' . $range;
 		return $qry;
 	}		
 	
