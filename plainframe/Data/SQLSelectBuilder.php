@@ -23,10 +23,10 @@ class SQLSelectBuilder {
 				'lteq'=> array('condition' => '%s <= %s', 'interpolate'=>array('field', 'binding')),
 				'equals' => array('condition' => '%s = %s', 'interpolate'=>array('field', 'binding')),
 				'notequals' => array('condition' => '%s != %s', 'interpolate'=>array('field', 'binding')),
-				'null' => array('condition' => '%s IS NULL', 'interpolate'=>array('field')),
-				'notnull' => array('condition' => '%s IS NOT NULL', 'interpolate'=>array('field')),
-				'empty' => array('condition' => '%s IS NULL OR %s = \'\'', 'interpolate'=>array('field', 'field')),
-				'notempty'=> array('condition' => '%s IS NOT NULL AND %s != \'\'', 'interpolate'=>array('field', 'field')),
+				'null' => array('condition' => '%s IS NULL', 'interpolate'=>array('field'), 'ignoreparam' => true),
+				'notnull' => array('condition' => '%s IS NOT NULL', 'interpolate'=>array('field'),'ignoreparam' => true),
+				'empty' => array('condition' => '%s IS NULL OR %s = \'\'', 'interpolate'=>array('field', 'field'), 'ignoreparam' => true),
+				'notempty'=> array('condition' => '%s IS NOT NULL AND %s != \'\'', 'interpolate'=>array('field', 'field'), 'ignoreparam' => true),
 				'in' => array('condition' => '%s IN (%s)', 'interpolate'=>array('field', 'binding'), 'explode_param' => true, 'param_delimiter'=>'|', 'param_glue' => ', '),
 				'or' => array('condition' => '%s LIKE %s', 'interpolate'=>array('field', 'binding'), 'explode_filter' => true, 'param_delimiter' => '|', 'filter_glue' => ' OR '),
 			);
@@ -68,16 +68,16 @@ class SQLSelectBuilder {
 				
 		switch($dbtype) {
 			case('MYSQL'):
-				return $this->buildQueryMysql();
+				return $this->buildQueryMysql($dbtype);
 				break;
 			case('SQLITE'):
-				return $this->buildQueryMysql();
+				return $this->buildQueryMysql($dbtype);
 				break;
 			case('SQL'):
-				return $this->buildQuerySql();
+				return $this->buildQuerySql($dbtype);
 				break;
 			default:
-				return $this->buildQueryMysql();
+				return $this->buildQueryMysql($dbtype);
 				break;
 		}
 	}
@@ -109,7 +109,7 @@ class SQLSelectBuilder {
 	}
 	
 		
-	private function buildQueryMysql() {
+	private function buildQueryMysql($dbtype) {
 		
 		$conditions = !empty($this->conditions) ? implode(' AND ', $this->conditions) : '1=1';
 		$sumconditions = !empty($this->sumconditions) ? implode(' AND ', $this->sumconditions) : '1=1';
@@ -128,9 +128,10 @@ class SQLSelectBuilder {
 		}	
 				
 		$_sortlevels = array();
+		$collation = $dbtype == 'SQLITE' ? ' COLLATE NOCASE ' : '';
 		if(!empty($this->sortlevels) && $this->sortLevelsAreValid()) {
 			foreach($this->sortlevels as $level) {
-				$_sortlevels[] = $level['orderby'] . ' COLLATE NOCASE ' . $level['sort'];
+				$_sortlevels[] = $level['orderby'] . $collation . $level['sort'];
 			}
 		}
 		$orderby = !empty($_sortlevels) ? ' ORDER BY ' . implode(', ', $_sortlevels) : '';
@@ -144,7 +145,7 @@ class SQLSelectBuilder {
 		return $qry;
 	}
 	
-	private function buildQuerySql() {
+	private function buildQuerySql($dbtype) {
 		
 		$conditions = !empty($this->conditions) ? implode(' AND ', $this->conditions) : '1=1';
 		$sumconditions = !empty($this->sumconditions) ? implode(' AND ', $this->sumconditions) : '1=1';
@@ -237,7 +238,9 @@ class SQLSelectBuilder {
 							$values = array('field' => $filter['field'], 'binding' => '?');
 							$conditions[] = $this->constructCondition($op['condition'], $op['interpolate'], $values);
 						}
-						$_params[] = (!empty($op['before_param']) ? $op['before_param'] : '') . $value . (!empty($op['after_param']) ? $op['after_param'] : '');
+						if(!array_key_exists('ignoreparam', $op) || $op['ignoreparam'] != true) {
+							$_params[] = (!empty($op['before_param']) ? $op['before_param'] : '') . $value . (!empty($op['after_param']) ? $op['after_param'] : '');
+						}
 					}
 					$_filt = implode($op['filter_glue'], $conditions);
 				}
@@ -246,7 +249,9 @@ class SQLSelectBuilder {
 					$bindings = array();
 					foreach($values as $value) {
 						$bindings[] = '?';
-						$_params[] = (!empty($op['before_param']) ? $op['before_param'] : '') . $value . (!empty($op['after_param']) ? $op['after_param'] : '');
+						if(!array_key_exists('ignoreparam', $op) || $op['ignoreparam'] != true) {
+							$_params[] = (!empty($op['before_param']) ? $op['before_param'] : '') . $value . (!empty($op['after_param']) ? $op['after_param'] : '');
+						}
 					}
 					
 					if(array_key_exists('interpolate', $op)) {
@@ -258,7 +263,9 @@ class SQLSelectBuilder {
 					if(array_key_exists('interpolate', $op)) {
 						$_filt = $this->constructCondition($op['condition'], $op['interpolate'], array('field' => $filter['field'], 'binding' => '?'));
 					}
-					$_params[] = (!empty($op['before_param']) ? $op['before_param'] : '') . (!empty($filter['value']) ? $filter['value'] : '') . (!empty($op['after_param']) ? $op['after_param'] : '');
+					if(!array_key_exists('ignoreparam', $op) || $op['ignoreparam'] != true) {
+						$_params[] = (!empty($op['before_param']) ? $op['before_param'] : '') . (!empty($filter['value']) ? $filter['value'] : '') . (!empty($op['after_param']) ? $op['after_param'] : '');
+					}
 				}
 			}
 			
