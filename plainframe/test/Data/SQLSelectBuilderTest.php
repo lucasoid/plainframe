@@ -167,7 +167,7 @@ class SQLSelectBuilderTest extends PHPUnit_Framework_TestCase {
 	
 	public function testGetQueryMySql() {
 		$qry = $this->builder->getQuery('MYSQL');
-		$expected = 'SELECT * FROM (SELECT id, author, title, descr AS description FROM books) AS x WHERE author LIKE ? AND 1=1 ORDER BY author COLLATE NOCASE asc LIMIT 25, 25';
+		$expected = 'SELECT * FROM (SELECT id, author, title, descr AS description FROM books) AS x WHERE author LIKE ? AND 1=1 ORDER BY author  asc LIMIT 25, 25';
 		$this->assertEquals($expected, $qry);
 	}
 	
@@ -182,7 +182,7 @@ class SQLSelectBuilderTest extends PHPUnit_Framework_TestCase {
 		$this->builder->filters[] = array('field' => 'sum', 'operator' => 'gt', 'value'=>2000, 'sum' => true);
 		$this->builder->baseQuery = 'SELECT id, author, title, descr AS description, (SELECT sum(qty) FROM sales WHERE id=published.bookid AND <<WHERE>>) AS sum FROM books';
 		$qry = $this->builder->getQuery('MYSQL');
-		$expected = 'SELECT * FROM (SELECT id, author, title, descr AS description, (SELECT sum(qty) FROM sales WHERE id=published.bookid AND author LIKE ?) AS sum FROM books) AS x WHERE author LIKE ? AND sum > ? ORDER BY author COLLATE NOCASE asc LIMIT 25, 25';
+		$expected = 'SELECT * FROM (SELECT id, author, title, descr AS description, (SELECT sum(qty) FROM sales WHERE id=published.bookid AND author LIKE ?) AS sum FROM books) AS x WHERE author LIKE ? AND sum > ? ORDER BY author  asc LIMIT 25, 25';
 		$this->assertEquals($expected, $qry);
 	}
 	

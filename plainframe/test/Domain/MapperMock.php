@@ -11,6 +11,8 @@ class MapperMock extends Mapper {
 	
 	protected function setIdField() {}
 	
+	protected function setIdSaveField() {}
+	
 	protected function setMappedClass() {}
 	
 	protected function setTable() {}

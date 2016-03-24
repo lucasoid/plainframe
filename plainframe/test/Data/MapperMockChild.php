@@ -15,11 +15,15 @@ class MapperMockChild extends Mapper {
 	}
 	
 	protected function setSaveColumns() {
-		$this->savecolumns = array('id', 'title', 'description');
+		$this->savecolumns = array('id'=>'id', 'title'=>'title', 'description'=>'description');
 	}
 	
 	protected function setIdField() {
 		$this->idFieldName = 'id';
+	}
+	
+	protected function setIdSaveField() {
+		$this->idSaveFieldName = 'id';
 	}
 	
 	protected function setMappedClass() {
