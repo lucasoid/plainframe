@@ -38,58 +38,18 @@ class SqlDB {
 	 * @param string $dbtype
 	 * @param string $timezoneoffset
 	 */
-	public function __construct($host = null, $database = null, $user = null, $pw = null, $dbtype = null, $options = array()) {
+	public function __construct($host = null, $database = null, $user = null, $password = null, $dbtype = null, $options = array()) {
 		
-		if(!empty($dbtype)) {
-			$this->dbtype = $dbtype;
-		}
-		elseif(null != Config::get('db', 'driver')) {
-			$this->dbtype = Config::get('db', 'driver');
-		}
-		else {
-			$this->dbtype = "MYSQL";
-		}
+		$this->dbtype = !empty($dbtype) ? $dbtype : (null != Config::get('db', 'driver') ? Config::get('db', 'driver') : 'MYSQL');
+				
+		$this->host = !empty($host) ? $host : (null != Config::get('db', 'host') ? Config::get('db', 'host') : 'localhost');
 		
-		if(!empty($host)) {
-			$this->host = $host;
-		}
-		elseif(null != Config::get('db', 'host')) {
-			$this->host = Config::get('db', 'host');
-		}
-		else {
-			$this->host = "localhost";
-		}
+		$this->user = !empty($user) ? $user : (null != Config::get('db', 'user') ? Config::get('db', 'user') : '');
 		
-		if(!empty($user)) {
-			$this->user = $user;
-		}
-		elseif(null != Config::get('db', 'user')) {
-			$this->user = Config::get('db', 'user');
-		}
-		else {
-			$this->user = '';
-		}
+		$this->password = !empty($password) ? $password : (null != Config::get('db', 'password') ? Config::get('db', 'password') : '');
 		
-		if(!empty($pw)) {
-			$this->password = $pw;
-		}
-		elseif(null != Config::get('db', 'password')) {
-			$this->password = Config::get('db', 'password');
-		}
-		else {
-			$this->password = '';
-		}
-		
-		if(!empty($database)) {
-			$this->database = $database;
-		}
-		elseif(null != Config::get('db', 'database')) {
-			$this->database = Config::get('db', 'database');
-		}
-		else {
-			$this->database = '';
-		}
-		
+		$this->database = !empty($database) ? $database : (null != Config::get('db', 'database') ? Config::get('db', 'database') : '');
+				
 		switch(strtoupper($this->dbtype)) {
 			case("MYSQL"):
 				$this->dsn = "mysql:host={$this->host};dbname={$this->database}";
