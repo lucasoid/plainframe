@@ -56,6 +56,12 @@ class ObjectTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($mock->readyToUpdate['id']);
 	}
 	
+	public function testObserveWithNullValue() {
+		$mock = new \plainframe\Domain\Mock(45);
+		$mock->observe('date', null);
+		$this->assertTrue($mock->readyToUpdate['date']);
+	}
+	
 	public function testMapParametersForNonexistentKey() {
 		$array = array('nonexistent'=>'value');
 		$mock = new \plainframe\Domain\Mock(45);
@@ -101,6 +107,20 @@ class ObjectTest extends PHPUnit_Framework_TestCase {
 		$mock = new \plainframe\Domain\Mock(45);
 		$mock->mapParameters($array);
 		$this->assertEquals(22, $mock->title);
+	}
+	
+	public function testMapParametersWithDate() {
+		$array = array('date' => '2015-12-31');
+		$mock = new \plainframe\Domain\Mock(45);
+		$mock->mapParameters($array);
+		$this->assertEquals('2015-12-31', $mock->date);
+	}
+	
+	public function testMapParametersWithFalseDate() {
+		$array = array('date' => 'NotADateValue');
+		$mock = new \plainframe\Domain\Mock(45);
+		$mock->mapParameters($array);
+		$this->assertEquals(null, $mock->date);
 	}
 	
 	public function testToJson() {

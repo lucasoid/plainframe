@@ -8,6 +8,7 @@ class Book extends Object {
 	public $published;
 	public $pages;
 	public $allpages;
+	public $dateFields = array('published');
 	public $htmlAllowed = array('title', 'author', 'itemdescription');
 	
 	public function toArray() {

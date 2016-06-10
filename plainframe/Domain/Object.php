@@ -8,6 +8,7 @@ abstract class Object {
 	
 	public $id;
 	public $htmlAllowed = array();
+	public $dateFields = array();
 	public $readyToUpdate = array();
 	
 	public function __construct($id = null) {
@@ -44,7 +45,7 @@ abstract class Object {
 	 */
 	public function observe($property, $value) {
 		if(property_exists($this, $property)) {
-			if($this->{$property} !== $value) {
+			if($this->{$property} !== $value || is_null($this->{$property})) {
 				$this->readyToUpdate[$property] = true;
 				$this->{$property} = $value;
 			}
@@ -71,8 +72,13 @@ abstract class Object {
 					else {
 						$val = strip_tags($val);
 						$clean_value = htmlentities($val, ENT_NOQUOTES);
-					}
-									
+					}				
+				}
+				elseif(in_array($key, $this->dateFields)) {
+					$clean_value = $this->isDate($val) ? $val : null;
+				}
+				elseif(is_null($val)) {
+					$clean_value = null;
 				}
 				elseif(is_int($val)) {
 					$clean_value = $val;
@@ -93,7 +99,20 @@ abstract class Object {
 	public function toJson() {
 		return json_encode($this->toArray());
 	}
-		
+	
+	public function forceZeros($val) {
+		return empty($val) ? 0 : $val;
+	}
+	
+	public function isDate($val) {
+		try {
+			$d = new \DateTime($val);
+		}
+		catch(\Exception $e) {
+			$d = false;
+		}
+		return $d && $d->format('Y-m-d') === date('Y-m-d', strtotime($val));		
+	}	
 	
 	
 }

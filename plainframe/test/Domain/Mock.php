@@ -6,7 +6,9 @@ class Mock extends Object {
 	public $id;
 	public $title;
 	public $description;
+	public $date;
 	public $htmlAllowed = array('description');
+	public $dateFields = array('date');
 		
 	public function toArray() {
 		return array(
